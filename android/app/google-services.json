@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "435592608288",
+    "project_id": "safekids-dc94d",
+    "storage_bucket": "safekids-dc94d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435592608288:android:f0ec5c5b001ce37fceda45",
+        "android_client_info": {
+          "package_name": "com.example.safekids"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWBreLNCFYc4qxqVvc-qondfLvy5q9C14"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
