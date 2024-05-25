@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:safekids/pushNotif.dart';
 import 'package:flutter/services.dart';
 
 class ChildDetailsScreen extends StatefulWidget {
   final String firstName;
   final String lastName;
   final bool expanded;
+   final int initialUsageTime;
 
   const ChildDetailsScreen({
     required this.firstName,
     required this.lastName,
     required this.expanded,
+      required this.initialUsageTime,
   });
 
   @override
@@ -19,32 +22,43 @@ class ChildDetailsScreen extends StatefulWidget {
   class _ChildDetailsScreenState extends State<ChildDetailsScreen> {
   late Future<int> _usageDataFuture;
   bool expanded = true;
+   late Future<int> _usageTime;
   @override
   void initState() {
     super.initState();
-    // _usageDataFuture = getUsageData();
+      _usageTime = Future.value(widget.initialUsageTime); 
   }
 
-  static const platform = MethodChannel('getting_youtube_usage');
+  static const platform = MethodChannel('com.example.safekids');
 
-  Future<int> getUsageData() async {
-    try {
-      final int usageTime = await platform.invokeMethod('checkUsageTime');
-      print(usageTime);
-      return usageTime;
-    } on PlatformException catch (e) {
-      print('Error getting usage time: ${e.message}');
-      return -1; // Or any default value
-    }
+
+
+  Future<int> _getUsageTime() async {
+
+    await FirebaseApi().sendUsageTimeNotificationToUser();
+
+    return widget.initialUsageTime; 
   }
- int staticUsageTime = 120;
-String _formatTime(int seconds) {
-    // Convert seconds to hours and minutes
-    int hours = seconds ~/ 3600;
-    int remainingSeconds = seconds % 3600;
-    int minutes = remainingSeconds ~/ 60;
-    return '$hours h $minutes m';
+
+   void _refreshUsageTime() {
+    setState(() {
+      _usageTime = _getUsageTime();
+    });
   }
+
+String _formatTime(int milliseconds) {
+  int seconds = (milliseconds / 1000).round();
+
+  // Calculate hours, minutes, and remaining seconds
+  int hours = seconds ~/ 3600;
+  int remainingSeconds = seconds % 3600;
+  int minutes = remainingSeconds ~/ 60;
+
+  // Format the time string
+  return '$hours h $minutes m $seconds s';
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,14 +140,36 @@ String _formatTime(int seconds) {
   ),
   child: expanded
             ? ListView.builder(
-                itemCount: 1,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('App Name: Youtube'),
-                    subtitle: Text('Usage Time: ${_formatTime(staticUsageTime)}'),
-                  );
-                },
-              )
+  itemCount: 1,
+  itemBuilder: (context, index) {
+return FutureBuilder<int>(
+              future: _usageTime,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                 final usageTime = snapshot.data ?? 0; 
+          return ListTile(
+            title: Text('App Name: YouTube'),
+            subtitle: Text('Usage Time: ${_formatTime(usageTime)} '),
+            trailing: IconButton(
+              onPressed: () {
+                FirebaseApi().sendStopNotificationToUser();
+              },
+              icon: Icon(
+                Icons.stop_screen_share_outlined,
+                color: Colors.red,
+              ),
+            ),);
+                } else {
+                  return Text('Press the button to check usage time.');
+                }
+              },
+            );
+  },
+)
             : Center(
                 child: Text(
                   'Tap to Expand',
@@ -151,16 +187,13 @@ String _formatTime(int seconds) {
     ),
   ),
   floatingActionButton: FloatingActionButton(
-    onPressed: () {
-       getUsageData();
-    // Trigger a rebuild of the widget tree
-    setState(() {});
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Refreshed!')),
-      );
-    },
+    onPressed: () async {
+   
+ _refreshUsageTime();
+
+     },
     child: Icon(Icons.refresh),
-    backgroundColor: Colors.blue,
+    backgroundColor:   Colors.blueGrey[100],
   ),
   floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
 );

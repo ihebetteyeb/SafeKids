@@ -4,6 +4,7 @@ import 'package:safekids/pages/app_usage.dart';
 import 'package:safekids/pages/home_page.dart';
 import 'package:safekids/pages/login_register_page.dart';
 import 'package:flutter/services.dart';
+import 'package:safekids/pages/ChildDetails.dart';
 
 
 class WidgetTree extends StatefulWidget {
@@ -15,6 +16,16 @@ class WidgetTree extends StatefulWidget {
 }
 
 class _WidgetTreeState extends State<WidgetTree> {
+
+  static const platform = MethodChannel('com.example.safekids');
+
+@override
+  void initState() {
+    super.initState();
+    // platform.setMethodCallHandler(_handleMethodCall);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(stream: Auth().authStateChanges,

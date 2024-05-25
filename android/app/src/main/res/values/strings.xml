@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SafeKids</string>
+    <!-- Add this line -->
+    <string name="accessibility_service_label">My Accessibility Service</string>
+    <!-- You can add more string resources here -->
+    <string name="accessibility_service_description">This service helps to manage app usage.</string>
+</resources>

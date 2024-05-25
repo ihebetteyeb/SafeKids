@@ -6,11 +6,15 @@ import 'package:safekids/pushNotif.dart';
 import 'package:safekids/widget_tree.dart';
 import 'firebase_options.dart';
 import 'package:flutter/services.dart';
+import 'package:safekids/pages/ChildDetails.dart';
+import 'package:provider/provider.dart';
+import 'package:safekids/providers/childrenProvider.dart'; 
+import 'package:safekids/providers/child.dart'; 
 
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  const platform = MethodChannel('getting_youtube_usage');
+
   await Firebase.initializeApp( options: DefaultFirebaseOptions.currentPlatform);
   // Initialize notifications using FirebaseApi
   final firebaseApi = FirebaseApi();
@@ -18,20 +22,42 @@ Future<void> main() async {
 
 
 
-  runApp(const MyApp());
+  // Set up the MethodChannel
+  const platform = MethodChannel('com.example.safekids');
+  platform.setMethodCallHandler((call) async {
+    if (call.method == 'navigateToChildDetail') {
+      final usageTime = int.parse(call.arguments['usageTime']);
+      MyApp.navigatorKey.currentState?.push(MaterialPageRoute(
+        builder: (context) => ChildDetailsScreen(
+          firstName: "iheb",
+          lastName: "etteyeb",
+          expanded: true,
+          initialUsageTime: usageTime,
+        ),
+      ));
+    }
+  });
+
+
+   runApp(const MyApp());
 }
 
 
 class MyApp extends StatelessWidget {
  
-
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ChildrenProvider()),
+      ],
+      child: MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(primarySwatch: Colors.purple),
-    home:  WidgetTree());
+    navigatorKey: navigatorKey,
+    home:  WidgetTree()));
   }
 }

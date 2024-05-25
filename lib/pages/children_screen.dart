@@ -3,7 +3,9 @@ import 'package:safekids/pages/ChildDetails.dart';
 import 'package:safekids/providers/child.dart';
 import 'package:safekids/pushNotif.dart';
 import 'package:flutter/services.dart';
-
+import 'package:safekids/providers/childrenProvider.dart'; 
+import 'package:safekids/providers/child.dart'; 
+import 'package:provider/provider.dart';
 
 class ChildrenScreen extends StatelessWidget {
 
@@ -11,6 +13,7 @@ class ChildrenScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     final childrenProvider = Provider.of<ChildrenProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Children'),
@@ -37,6 +40,7 @@ class ChildrenScreen extends StatelessWidget {
           firstName: "iheb",
           lastName: "etteyeb",
           expanded: true,
+          initialUsageTime: 0
         ),
       ),
     );
@@ -45,7 +49,7 @@ class ChildrenScreen extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.settings),
                   onPressed: () {
-                    FirebaseApi().sendNotificationToUser();
+                    FirebaseApi().sendStopNotificationToUser();
                   },
                 ),
               ],
@@ -64,7 +68,7 @@ class ChildrenScreen extends StatelessWidget {
 
 
 final List<Child> children = [
-  Child(name: 'Child 1', imageUrl: 'assets/child1.jpg'),
-  Child(name: 'Child 2', imageUrl: 'assets/child2.jpg'),
+  Child(name: 'Child 1', imageUrl: 'assets/images/child1.png'),
+  Child(name: 'Child 2', imageUrl: 'assets/images/child1.png'),
 
 ];

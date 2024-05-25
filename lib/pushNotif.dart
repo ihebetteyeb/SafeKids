@@ -134,4 +134,91 @@ sendNotificationToUser() async {
 }
 
 
+Future<void> sendStopNotificationToUser() async {
+  // Our API Key
+  var serverKey =
+      "AAAAZWtXuiA:APA91bF59W1qnPQhBIi6X2ybRXgFsgkF9thBDQCo4v-sfVsr5_0f5yQwMxcmIrpC2z4iBnVeEzNtGblfMAEQ7IKCwSvfnCYs9RdyGU62xNeXlMEt3xHEw-jCgtVQ6tBMTRcRnu4D8tZR";
+
+  // The FCM token of the device
+  var token =
+      "cXYxxkQySh2eGPTFGN7cei:APA91bENxJA-xHhJOT-5oDPbkR0dj3sJIb_lr1M7yolCL6M7yzf5u6cvchia0YXXYRJgMBEuZgdBq5p8yh1iKOLnwWhNFuXLAaV6B1ZQ0IlNyXu2HgTvsoidsdDK6-bpZzaHt7clP6Q3";
+
+  // Function to construct FCM payload with the triggerMethod key
+  String constructFCMPayload(String token) {
+    return jsonEncode(
+      <String, dynamic>{
+        'data': <String, dynamic>{
+          'name': 'test',
+          'triggerMethod': 'pressHomeButton', // Add the triggerMethod key
+        },
+        'to': token,
+      },
+    );
+  }
+
+  if (token.isEmpty) {
+    return print('Unable to send FCM message, no token exists.');
+  }
+
+  try {
+    // Send FCM Message
+    http.Response response = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverKey',
+      },
+      body: constructFCMPayload(token),
+    );
+
+    print("Status: ${response.statusCode} | Message Sent Successfully!");
+  } catch (e) {
+    print("Error sending push notification: $e");
+  }
+}
+
+Future<void> sendUsageTimeNotificationToUser() async {
+  // Our API Key
+  var serverKey =
+      "AAAAZWtXuiA:APA91bF59W1qnPQhBIi6X2ybRXgFsgkF9thBDQCo4v-sfVsr5_0f5yQwMxcmIrpC2z4iBnVeEzNtGblfMAEQ7IKCwSvfnCYs9RdyGU62xNeXlMEt3xHEw-jCgtVQ6tBMTRcRnu4D8tZR";
+
+  // The FCM token of the device
+  var token =
+      "cXYxxkQySh2eGPTFGN7cei:APA91bENxJA-xHhJOT-5oDPbkR0dj3sJIb_lr1M7yolCL6M7yzf5u6cvchia0YXXYRJgMBEuZgdBq5p8yh1iKOLnwWhNFuXLAaV6B1ZQ0IlNyXu2HgTvsoidsdDK6-bpZzaHt7clP6Q3";
+
+  // Function to construct FCM payload with the triggerMethod key
+  String constructFCMPayload(String token) {
+    return jsonEncode(
+      <String, dynamic>{
+        'data': <String, dynamic>{
+          'name': 'test',
+          'triggerMethod': 'requestUsageTime', // Add the triggerMethod key
+        },
+        'to': token,
+      },
+    );
+  }
+
+  if (token.isEmpty) {
+    return print('Unable to send FCM message, no token exists.');
+  }
+
+  try {
+    // Send FCM Message
+    http.Response response = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverKey',
+      },
+      body: constructFCMPayload(token),
+    );
+
+    print("Status: ${response.statusCode} | Message Sent Successfully!");
+  } catch (e) {
+    print("Error sending push notification: $e");
+  }
+}
+
+
 }

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:safekids/components/app_drawer.dart';
 import 'package:flutter/services.dart';
 
+
 class HomePage extends StatelessWidget {
 
   HomePage({super.key }); 
@@ -28,6 +29,10 @@ class HomePage extends StatelessWidget {
   }
 
  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
+
+
 
   @override
   Widget build (BuildContext context){
